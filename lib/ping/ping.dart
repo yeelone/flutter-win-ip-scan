@@ -34,7 +34,7 @@ class PingPageState extends State {
 
   List<List<dynamic>> scanResult = [];
   Map<String, num> history = new Map<String, num>();
-  Map<String, num> lineMap = new Map<String, num>();
+  Map<String, num> indexMap = new Map<String, num>();
   @override
   void initState() {
     _controller1.text = "102";
@@ -151,7 +151,6 @@ class PingPageState extends State {
   // 将IP转为十进制
   num ip2decimalism(
       String field1, String field2, String field3, String field4) {
-    // 计算最大的IP地址
     num ipnum1 = pow(2, 24) * int.parse(field1);
     num ipnum2 = pow(2, 16) * int.parse(field2);
     num ipnum3 = pow(2, 8) * int.parse(field3);
@@ -160,9 +159,8 @@ class PingPageState extends State {
     return ipnum1 + ipnum2 + ipnum3 + ipnum4;
   }
 
-  // 将IP转为十进制
+  // 将十进制转为IP
   String decimalism2ip(int ipnum) {
-    // 计算最大的IP地址
     String field1 = (ipnum >> 24).toString();
     ipnum = ipnum - (pow(2, 24) * int.parse(field1)).toInt();
     String field2 = (ipnum >> 16).toString();
@@ -185,7 +183,7 @@ class PingPageState extends State {
       for (var i = 0; i < list.length; i++) {
         history[list[i][0]] = list[i][1];
 
-        lineMap[list[i][0]] = i;
+        indexMap[list[i][0]] = i;
 
         _remarkControllers.add(new TextEditingController(text: list[i][3]));
       }
@@ -245,9 +243,9 @@ class PingPageState extends State {
           line = [ip, 0, ""];
         }
 
-        if (this.lineMap.containsKey(ip)) {
+        if (this.indexMap.containsKey(ip)) {
           // 已存在则更新
-          num? index = this.lineMap[ip];
+          num? index = this.indexMap[ip];
           this.scanResult[index!.toInt()] = line;
         } else {
           this.scanResult.add(line);
@@ -318,13 +316,13 @@ class PingPageState extends State {
         setState(() {
           scanIP = "扫描结束 :" + ip + "\n" + line.toString();
         });
-        if (lineMap.containsKey(ip)) {
+        if (indexMap.containsKey(ip)) {
           // 已存在则更新
-          num? index = lineMap[ip];
+          num? index = indexMap[ip];
           scanResult[index!.toInt()] = line;
         } else {
           scanResult.add(line);
-          lineMap[ip] = scanResult.length - 1 ;
+          indexMap[ip] = scanResult.length - 1 ;
            _remarkControllers.add(new TextEditingController(text: "无"));
         }
 
